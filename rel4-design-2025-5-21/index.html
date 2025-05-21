@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>My Reveal.js Presentation</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/reveal.js/dist/reveal.css"
+    >
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/reveal.js/dist/theme/white.css"
+      id="theme"
+    >
+    <style>
+      .section-center {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+
+      h4.section-title {
+        position: relative;
+        text-align: left;
+        margin-top: 1em;
+        margin-left: 0em;
+      }
+
+      h2 {
+        text-transform: none !important;
+      }
+      ul, ol li {
+        line-height: 1.6em;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section class="section-center">
+          <h2>reL4-linux-kit 介绍</h2>
+        </section>
+        <section>
+          <h4 class="section-title">介绍</h4>
+          <ul>
+            <li>
+              reL4-linux-kit 是一套用于在 seL4 微内核上运行 Linux 程序的工具集
+            </li>
+            <li>在 seL4 微内核基础架构上运行 Linux 应用程序</li>
+            <li>实现必要的 Linux 系统调用以实现应用程序兼容性</li>
+            <li>提供安全的、基于微内核的执行环境</li>
+            <li>提供标准文件操作、进程管理和 I/O</li>
+          </ul>
+        </section>
+        <section>
+          <h4 class="section-title">设计思路</h4>
+          <ul>
+            <li>尽可能利用之前设计宏内核的经验</li>
+            <li>尽可能保证我们对宏内核的模块的修改更加小</li>
+            <li>功能优先</li>
+          </ul>
+        </section>
+        <section>
+          <img src="./architecture.png" style="margin-top: 1.5em" />
+        </section>
+        <section>
+          <h4 class="section-title">程序依赖图</h4>
+          <img src="./deptree.png" />
+        </section>
+        <section>
+          <h4 class="section-title">实现计划</h4>
+          <ol>
+            <li style="color: red">完成基本的功能(过程中)</li>
+            <li>完善形成的公共库</li>
+            <li>将 KernelTask 的部分组件迁移到 LinuxApp 中以提高性能</li>
+            <li>将 KernelTask 拆分，尽量让 LinuxApp 直接与服务任务通信</li>
+          </ol>
+        </section>
+        <section style="text-align: left">
+          <h4 class="section-title">主要通信机制</h4>
+          <ul>
+            <li>Endpoint</li>
+            <li>Notification</li>
+            <li>共享内存</li>
+          </ul>
+        </section>
+        <section>
+          <h4 style="position: fixed; top: 1em; left: -1em">通信流程图</h4>
+          <img src="./bootseq.png" style="height: 80vh; margin-left: 5em" />
+        </section>
+        <section>
+          <h4 style="position: fixed; top: 1em; left: -1em">共享内存</h4>
+          <img src="./sharememory.png" style="height: 80vh; margin-left: 5em" />
+        </section>
+        <section style="text-align: left">
+          <h4 class="section-title">系统调用处理</h4>
+          <ul>
+            <li>通过一个异常指令替换已有二进制程序中的系统调用指令</li>
+            <li>在 KernelTask 中捕获异常然后进行处理</li>
+            <li>Linux App 不直接与系统服务任务通信</li>
+          </ul>
+        </section>
+        <section>
+          <h4 style="position: fixed; top: 1em; left: -1em">系统调用处理</h4>
+          <img
+            src="./syscall.png"
+            style="height: 70vh; margin-top: 2em"
+          />
+        </section>
+        <section style="text-align: left">
+          <h4 class="section-title">模块灵活组合</h4>
+          <ul>
+            <li>通过配置文件来选择需要的模块</li>
+            <li>可以选择将哪些模块进行组合</li>
+            <li>可以选择将哪些模块进行分离</li>
+            <li>
+              可以在安全隔离优先的环境进行分离使用 IPC,
+              在性能优先的环境下使用函数调用
+            </li>
+          </ul>
+        </section>
+
+        <section>
+          <h4 style="position: fixed; top: 1em; left: -1em">模块灵活组合</h4>
+          <img
+            src="./mode1.png"
+            style="margin-top: 2em"
+          />
+        </section>
+        <section>
+          <h4 style="position: fixed; top: 1em; left: -1em">模块灵活组合</h4>
+          <img
+            src="./mode2.png"
+            style="margin-top: 2em"
+          />
+        </section>
+        <section class="section-center"><h2>谢谢</h2></section>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/reveal.js/dist/reveal.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/reveal.js-mermaid-plugin@11.4.1/plugin/mermaid/mermaid.js"
+    ></script>
+    <script>
+      Reveal.initialize({
+        // Activate the scroll view
+        // view: "scroll",
+        center: false,
+
+        // Force the scrollbar to remain visible
+        // scrollProgress: true,
+
+        // mermaid initialize config
+        mermaid: {
+          // flowchart: {
+          //   curve: 'linear',
+          // },
+        },
+        slideNumber: true,
+        plugins: [RevealMermaid],
+      });
+    </script>
+  </body>
+</html>
